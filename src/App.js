@@ -8,7 +8,7 @@ import {
   deleteUserById,
 } from "./api/user";
 import { useState, useEffect } from "react";
-
+import dayjs from "dayjs";
 function App() {
   const handleCreateUser = async () => {
     await createUser({
@@ -32,11 +32,21 @@ function App() {
       title: "创建时间",
       dataIndex: "createTime",
       key: "createTime",
+      render: (_, record) => (
+        <Space size="middle">
+          <span>{dayjs(record.createTime).format("YYYY-MM-DD HH:mm:ss")}</span>
+        </Space>
+      ),
     },
     {
       title: "更新时间",
       dataIndex: "updateTime",
       key: "updateTime",
+      render: (_, record) => (
+        <Space size="middle">
+          <span>{dayjs(record.updateTime).format("YYYY-MM-DD HH:mm:ss")}</span>
+        </Space>
+      ),
     },
     {
       title: "Action",
@@ -50,7 +60,6 @@ function App() {
   ];
   const [data, setData] = useState([]);
   const handleGetUserList = async () => {
-    console.log("1");
     const { data } = await getUserList();
     setData(
       data.map((item) => {
@@ -78,18 +87,19 @@ function App() {
 
   return (
     <div className="App">
-      <Button type="default" onClick={handleCreateUser}>
-        创建用户
-      </Button>
-      <Button type="primary" onClick={handleGetUserList}>
-        获取用户列表
-      </Button>
-      <Button type="link" onClick={handleUpdateUser}>
-        更新用户
-      </Button>
-      <Button danger onClick={handleDeleteUser}>
-        删除用户
-      </Button>
+      <Space>
+        {" "}
+        <Button type="default" onClick={handleCreateUser}>
+          创建用户
+        </Button>
+        <Button type="primary" onClick={handleGetUserList}>
+          获取用户列表
+        </Button>
+        <Button type="link" onClick={handleUpdateUser}>
+          更新用户
+        </Button>
+      </Space>
+
       <div className="ly_8">
         <Table dataSource={data} columns={columns} />
       </div>
