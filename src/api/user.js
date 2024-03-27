@@ -1,19 +1,19 @@
 // index.js
 
-import axios from "axios";
+import apiClient from "./httpClients";
 
 export function createUser(data) {
-  return axios.post("/api/user", data);
+  return apiClient.post("/api/user", data);
 }
 export function getUserList() {
-  return axios.get("/api/user/list");
+  return apiClient.get("/api/user/list");
 }
 export function getUserById(id) {
-  return axios.get("/api/user/" + id);
+  return apiClient.get("/api/user/" + id);
 }
 export function updateUserById(id, data) {
-  return axios.patch("/api/user/" + id, data);
+  return apiClient.patch("/api/user/" + id, data);
 }
 export function deleteUserById(id) {
-  return axios.delete("/api/user/" + id);
+  return apiClient.delete("/api/user/" + id);
 }
