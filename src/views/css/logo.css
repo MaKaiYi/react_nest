@@ -1,4 +1,16 @@
 .fromClass{
 	margin: 0px auto;
-	margin-top: 30%;
+	position: absolute;
+	width: 700px;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%,-40%);
+	img{
+		width: 150px;
+		object-fit: contain;
+		margin: auto;
+		justify-content: center;
+		display: flex;
+		margin-bottom: 60px;
+	}
 }
