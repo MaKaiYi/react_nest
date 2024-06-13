@@ -194,6 +194,11 @@ function Main() {
     setIsModalOpen(false);
   };
 
+  const cleanToken = () => {
+    localStorage.clear();
+    handleGetUserList();
+  };
+
   return (
     <div className="App">
       <Space
@@ -203,6 +208,7 @@ function Main() {
         <Button type="primary" onClick={showModal}>
           创建用户
         </Button>
+        <Button onClick={cleanToken}>清楚token</Button>
       </Space>
 
       <div className="ly_8">

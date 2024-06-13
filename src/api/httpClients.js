@@ -42,6 +42,10 @@ try {
         // 返回一个默认的对象结构来防止解构错误
         return error.response.data;
       }
+      if (error.response.status == 500) {
+        // 返回一个默认的对象结构来防止解构错误
+        return error.response.data;
+      }
       // 对响应错误做点什么
       return Promise.reject(error);
     }
