@@ -1,305 +1,157 @@
+import React, { useState } from 'react';
+import myhead from '../assets/logo192.png';
+import { Outlet, useNavigate } from 'react-router-dom';
+import './css/main.css';
 import {
-  Button,
-  Table,
-  Space,
-  message,
-  Modal,
-  Form,
-  Input,
-  Radio,
-  DatePicker,
-  Pagination,
-} from 'antd';
-import '../App.css';
+  UploadOutlined,
+  UserOutlined,
+  VideoCameraOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  DownOutlined,
+} from '@ant-design/icons';
+import { Space, Layout, Menu, theme, Button, Avatar, Dropdown } from 'antd';
+const { Header, Content, Footer, Sider } = Layout;
 
-import {
-  createUser,
-  getUserList,
-  updateUserById,
-  deleteUserById,
-} from '../api/user';
-import { useState, useEffect } from 'react';
-import dayjs from 'dayjs';
-function Main() {
-  const messageApi = message;
-  const [form] = Form.useForm();
-  const [queryForm, setQueryForm] = useState({
-    name: '',
-    sex: '男',
-    createTime: null,
-    updateTime: null,
-    id: '',
-  });
-  const [pageInfo, setPageInfo] = useState({
-    page: 1,
-    pageSize: 10,
-    total: 0,
-  });
+const menuList = [
+  {
+    key: 'user',
+    icon: React.createElement(UserOutlined),
+    label: '用户管理',
+  },
+  {
+    key: 'video',
+    icon: React.createElement(VideoCameraOutlined),
+    label: '视频管理',
+  },
+  {
+    key: 'upload',
+    icon: React.createElement(UploadOutlined),
+    label: '上传管理',
+  },
+  {
+    key: 'menuSet',
+    icon: React.createElement(MenuFoldOutlined),
+    label: '标签管理',
+  },
+];
 
-  const updatePageInfo = (key, value) => {
-    setPageInfo((prevPageInfo) => ({
-      ...prevPageInfo,
-      [key]: value,
-    }));
-  };
-  // 分页切换
-  const onPageChange = (value) => {
-    updatePageInfo('page', value);
-  };
-  const onPageSizeChage = (page, pageS) => {
-    updatePageInfo('pageSize', pageS);
-  };
-  // 当pageInfo.page发生变化时调用handleGetUserList
-  useEffect(() => {
-    handleGetUserList();
-  }, [pageInfo.page, pageInfo.pageSize]);
-
-  const handleDateChange = (date, dateString, fieldName) => {
-    setQueryForm({
-      ...queryForm,
-      [fieldName]: dayjs(date).format('YYYY-MM-DD HH:mm:ss'), // 更新指定的日期字段
-    });
-  };
-
-  const columns = [
+const App = () => {
+  const items = [
     {
-      title: '姓名',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '性别',
-      dataIndex: 'sex',
-      key: 'age',
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
-      render: (_, record) => (
-        <Space size="middle">
-          <span>{dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')}</span>
-        </Space>
-      ),
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-      key: 'updateTime',
-      render: (_, record) => (
-        <Space size="middle">
-          <span>{dayjs(record.updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
-        </Space>
-      ),
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a onClick={() => handleDeleteUser(record.id)}>Delete</a>
-          <a onClick={() => handleEditUser(record)}>Edit</a>
-        </Space>
+      key: '1',
+      label: (
+        <a target="_blank" onClick={() => layOyut()}>
+          退出登陆
+        </a>
       ),
     },
   ];
-  const [data, setData] = useState([]);
-  const handleGetUserList = async () => {
-    let params = {
-      page: pageInfo.page,
-      pageSize: pageInfo.pageSize,
-    };
-    const { data, success, message } = await getUserList(params);
-
-    if (success && data) {
-      updatePageInfo('total', data.total);
-      setData(
-        data.data.map((item) => {
-          return {
-            ...item,
-            key: item.id,
-          };
-        })
-      );
-    } else {
-      messageApi.error(message);
-    }
+  const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+  const handleMenuClick = ({ key }) => {
+    navigate(key); // 跳转到对应路由
   };
-  useEffect(() => {
-    console.log(queryForm);
-  }, [queryForm]);
-  const handleEditUser = async (row) => {
-    setQueryForm({
-      ...row,
-      createTime: row.createTime
-        ? dayjs(row.createTime).format('YYYY-MM-DD HH:mm:ss')
-        : null,
-      updateTime: row.updateTime
-        ? dayjs(row.updateTime).format('YYYY-MM-DD HH:mm:ss')
-        : null,
-    });
-
-    // 使用 form.setFieldsValue 同步到表单中
-    form.setFieldsValue({
-      ...row,
-      createTime: row.createTime ? dayjs(row.createTime) : null,
-      updateTime: row.updateTime ? dayjs(row.updateTime) : null,
-    });
-    setIsModalOpen(true);
-  };
-  const { confirm } = Modal;
-  const handleDeleteUser = async (id) => {
-    confirm({
-      title: '提示',
-      content: '是否要删除当前数据',
-      onOk: async () => {
-        const { success } = await deleteUserById(id);
-        if (success) {
-          handleGetUserList();
-          messageApi.success('操作成功');
-        }
-      },
-      onCancel() {
-        console.log('Cancel');
-      },
-    });
-  };
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-      let params = {
-        ...queryForm,
-      };
-      delete params.key;
-      let { success } = params.id
-        ? await updateUserById(params.id, params)
-        : await createUser(params);
-      if (success) {
-        form.resetFields();
-        handleGetUserList();
-        setIsModalOpen(false);
-        messageApi.success('操作成功');
-      }
-    } catch (errorInfo) {
-      console.log('Failed:', errorInfo);
-    }
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const cleanToken = () => {
+  const layOyut = () => {
     localStorage.clear();
-    handleGetUserList();
+    navigate('/login');
   };
-
   return (
-    <div className="App">
-      <Space
-        style={{ display: 'flex', justifyContent: 'end', marginRight: 150 }}
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(collapsed, type) => {
+          console.log(collapsed, type);
+        }}
       >
-        {' '}
-        <Button type="primary" onClick={showModal}>
-          创建用户
-        </Button>
-        <Button onClick={cleanToken}>清楚token</Button>
-      </Space>
+        <div className="demo-logo-vertical">
+          <img src={myhead} alt="" className="logo_header" />
 
-      <div className="ly_8">
-        <Table dataSource={data} columns={columns} pagination={false} />
-        <div style={{ display: 'flex', justifyContent: 'end', marginTop: 30 }}>
-          {' '}
-          <Pagination
-            current={pageInfo.page}
-            onChange={onPageChange}
-            onShowSizeChange={onPageSizeChage}
-            total={pageInfo.total}
-            pageSize={pageInfo.pageSize}
-          />
+          {!collapsed && <span className="logo_text">React</span>}
         </div>
-      </div>
-      <Modal
-        title="Basic Modal"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        centered={true}
-      >
-        <Form
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 14 }}
-          layout="horizontal"
-          variant="filled"
-          form={form}
-          style={{ maxWidth: 600, paddingTop: 30 }}
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={['user']}
+          items={menuList}
+          onClick={handleMenuClick}
+        />
+      </Sider>
+      <Layout>
+        <Header
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+          }}
         >
-          <Form.Item
-            label="姓名"
-            name="name"
-            rules={[{ required: true, message: '姓名不能为空!' }]}
-          >
-            <Input
-              name="name"
-              value={queryForm.name}
-              onChange={(e) =>
-                setQueryForm((prevForm) => ({
-                  ...prevForm,
-                  name: e.target.value,
-                }))
-              }
-            />
-          </Form.Item>
-          <Form.Item label="性别">
-            <Radio.Group
-              value={queryForm.sex}
-              name="sex"
-              onChange={(e) =>
-                setQueryForm((prevForm) => ({
-                  ...prevForm,
-                  sex: e.target.value,
-                }))
-              }
+          {' '}
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              fontSize: '16px',
+              width: 64,
+              height: 64,
+            }}
+          />
+          <Dropdown menu={{ items }}>
+            <a
+              onClick={(e) => e.preventDefault()}
+              style={{
+                position: 'absolute',
+                right: 24,
+                top: 0,
+                cursor: 'pointer',
+              }}
             >
-              <Radio value="男"> 男 </Radio>
-              <Radio value="女"> 女 </Radio>
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item
-            label="创建日期:"
-            name="createTime"
-            rules={[{ required: true, message: '日期不能为空!' }]}
+              <Space>
+                <Avatar
+                  size={{
+                    xs: 24,
+                    sm: 34,
+                    md: 34,
+                    lg: 30,
+                    xl: 35,
+                    xxl: 30,
+                  }}
+                  src={myhead}
+                />
+                <DownOutlined />
+              </Space>
+            </a>
+          </Dropdown>
+        </Header>
+        <Content
+          style={{
+            margin: '24px 16px 0',
+          }}
+        >
+          <div
+            style={{
+              padding: 24,
+              minHeight: 360,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
           >
-            <DatePicker
-              value={queryForm.createTime}
-              name="createTime"
-              onChange={(date, dateString) =>
-                handleDateChange(date, dateString, 'createTime')
-              }
-            />
-          </Form.Item>
-          <Form.Item
-            label="更新日期:"
-            name="updateTime"
-            rules={[{ required: true, message: '日期不能为空!' }]}
-          >
-            <DatePicker
-              value={queryForm.updateTime}
-              name="updateTime"
-              onChange={(date, dateString) =>
-                handleDateChange(date, dateString, 'updateTime')
-              }
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
-    </div>
+            <Outlet />
+          </div>
+        </Content>
+        <Footer
+          style={{
+            textAlign: 'center',
+          }}
+        >
+          Maky ©{new Date().getFullYear()} Make by React
+        </Footer>
+      </Layout>
+    </Layout>
   );
-}
-
-export default Main;
+};
+export default App;

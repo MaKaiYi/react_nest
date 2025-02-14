@@ -14,14 +14,15 @@
     "eslint-plugin-react": "^7.34.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "react": "^18.2.0",
+    "react-app-rewired": "^2.2.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "set PORT=9000 && react-scripts start",
-    "build": "react-scripts build",
+    "start": "set PORT=9000 && react-app-rewired start",
+    "build": "react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
@@ -47,6 +48,7 @@
   "devDependencies": {
     "@eslint/compat": "^1.0.3",
     "@eslint/js": "^9.4.0",
+    "code-inspector-plugin": "^0.20.0",
     "eslint": "^9.4.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^9.1.0",

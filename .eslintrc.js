@@ -24,6 +24,7 @@ module.exports = {
     'comma-dangle': 'off', // 不强制要求逗号
     eqeqeq: 'off', // 允许使用宽松相等运算符
     'no-empty': 'off', // 允许空块语句
+    'no-nested-ternary': 'off', // 允许嵌套三元表达式
     'import/extensions': 'off', // 允许文件扩展名
     'import/newline-after-import': 'off', // 允许没有空行
     'import/prefer-default-export': 'off', // 不强制默认导出

@@ -1,0 +1,23 @@
+.headerImg {
+  width: 30px;
+  width: 30px;
+  object-fit: contain;
+}
+.logo_header {
+  width: 30px;
+  width: 30px;
+  object-fit: contain;
+  margin-left: 25px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.logo_text {
+  color: white;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 15px;
+  line-height: 30px;
+  font-size: 16px;
+}
