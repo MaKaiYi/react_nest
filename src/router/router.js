@@ -43,7 +43,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: '/subdir',
+    basename: '/subdir/',
   }
 );
 
